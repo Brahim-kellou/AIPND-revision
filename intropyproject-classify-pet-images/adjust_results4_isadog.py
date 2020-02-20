@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/adjust_results4_isadog.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                 
+# PROGRAMMER: Brahim Kellou
+# DATE CREATED: 02/19/2020                             
 # REVISED DATE: 
 # PURPOSE: Create a function adjust_results4_isadog that adjusts the results 
 #          dictionary to indicate whether or not the pet image label is of-a-dog, 
@@ -29,14 +29,7 @@
 #           the item at index 4 of the list. Note we recommend setting the values
 #           at indices 3 & 4 to 1 when the label is of-a-dog and to 0 when the 
 #           label isn't a dog.
-#
-##
-# TODO 4: Define adjust_results4_isadog function below, specifically replace the None
-#       below by the function definition of the adjust_results4_isadog function. 
-#       Notice that this function doesn't return anything because the 
-#       results_dic dictionary that is passed into the function is a mutable 
-#       data type so no return is needed.
-# 
+ 
 def adjust_results4_isadog(results_dic, dogfile):
     """
     Adjusts the results dictionary to determine if classifier correctly 
@@ -66,5 +59,43 @@ def adjust_results4_isadog(results_dic, dogfile):
                maltese) (string - indicates text file's filename)
     Returns:
            None - results_dic is mutable data type so no return needed.
-    """           
-    None
+    """
+    
+    dognames_dic = dict()
+    
+    with open(dogfile, "r") as infile:
+        line = infile.readline()
+        
+        # Processes each line in file until reaching EOF
+        while line != "":
+            
+            # Strip new line from line
+            line = line.strip('\n')
+            
+            # Check if line doesn't already exist in dognames_dict
+            if line not in dognames_dic:
+                dognames_dic[line] = 1
+                
+            line = infile.readline()
+            
+    for key in results_dic:
+        pet_label_isadog = int()
+        classifier_label_isadog = int()
+        
+        # Pet Image Label is image of Dog
+        if results_dic[key][0] in dognames_dic:
+            pet_label_isadog = 1
+                
+        # Pet Image Label is not image of Dog
+        else:
+            pet_label_isadog = 0
+        
+        # Classifier Image Label is image of Dog
+        if results_dic[key][1] in dognames_dic:
+            classifier_label_isadog = 1
+                
+        # Classifier Image Label is not image of Dog
+        else:
+            classifier_label_isadog = 0
+                    
+        results_dic[key].extend([pet_label_isadog, classifier_label_isadog])

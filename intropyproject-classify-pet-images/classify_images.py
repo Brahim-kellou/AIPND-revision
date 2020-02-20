@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/classify_images.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                 
+# PROGRAMMER: Brahim Kellou
+# DATE CREATED: 02/18/2020                           
 # REVISED DATE: 
 # PURPOSE: Create a function classify_images that uses the classifier function 
 #          to create the classifier labels and then compares the classifier 
@@ -12,7 +12,7 @@
 #             and as in_arg.dir for function call within main. 
 #            -The results dictionary as results_dic within classify_images 
 #             function and results for the functin call within main.
-#            -The CNN model architecture as model within classify_images function
+#            -The CNN model architecture as model wihtin classify_images function
 #             and in_arg.arch for the function call within main. 
 #           This function uses the extend function to add items to the list 
 #           that's the 'value' of the results dictionary. You will be adding the
@@ -23,12 +23,6 @@
 # Imports classifier function for using CNN to classify images 
 from classifier import classifier 
 
-# TODO 3: Define classify_images function below, specifically replace the None
-#       below by the function definition of the classify_images function. 
-#       Notice that this function doesn't return anything because the 
-#       results_dic dictionary that is passed into the function is a mutable 
-#       data type so no return is needed.
-# 
 def classify_images(images_dir, results_dic, model):
     """
     Creates classifier labels with classifier function, compares pet labels to 
@@ -65,4 +59,27 @@ def classify_images(images_dir, results_dic, model):
      Returns:
            None - results_dic is mutable data type so no return needed.         
     """
-    None 
+    for key in results_dic:
+        try:   
+            image_path = images_dir + key
+            image_classification = classifier(image_path, model)
+
+            # Convert all characters within model_label 
+            # to lowercase letters and then strip spaces.
+            model_label = image_classification.lower().strip()
+
+            # Defines pet_label as pet image label
+            pet_label = results_dic[key][0]
+
+            # Determine if pet_label matches model_label
+            is_match = int()
+            if pet_label in model_label:
+                is_match = 1
+            else:
+                is_match = 0
+                
+            results_dic[key].extend([model_label, is_match])
+                
+        # Catch error when file is not found
+        except OSError as e:
+            print('Error file does\'nt exist: ', str(e))
